@@ -1,3 +1,5 @@
+Connect-AzureAD
+
 $allUsers = Get-AzureADUser -All $true
 $applyPolicy = "Name or part of Name of Group for Policy"
 $mailboxPolicyName = "Policy to Apply"

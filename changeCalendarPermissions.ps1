@@ -18,6 +18,17 @@ foreach($mailbox in $allMailboxes){
        }
     }
 }
+$outCSV = ".\outputCSV.csv"
+$outHASH = @{}
+foreach($mailbox in $allMailboxes){
+    $name = $mailbox.exchangeobjectid
+    foreach($member in $groupMembers){
+        $outHASHvalue = get-MailboxFolderPermission -Identity $name`:\Calendar -User $member
+        Export-CSV -InputObject $outHASHvalue -path $outCSV -append
+    }
+}
+Export-CSV -InputObject $outHASH -path $outCSV
+
 $twoDaysAgo = [DateTime]::Now.AddDays(-2)
 $now = [DateTime]::Now
 $auditLog = Search-UnifiedAuditLog -StartDate $twoDaysAgo -EndDate $now -RecordType AzureActiveDirectory -Operations "Add Member to Group"
