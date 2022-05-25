@@ -3,21 +3,21 @@ Krystina Kyle, 2/3/2022#>
 
 Connect-ExchangeOnline
 #Filter removes external users
-$allMailboxes = Get-User -ResultSize unlimited | Where-Object {$_.UserPrincipalName -like "*butcherbox.com"}
+$allMailboxes = Get-User -ResultSize unlimited | Where-Object {($_.UserPrincipalName -like "*butcherbox.com")}# -and ($_.WhenCreated -gt [DateTime]::Now.AddDays(-7))}
 
 <#Use $permGroup for if you are using a mail-enabled security group#>
 $permGroup = get-group -identity "PeopleOpsRecruiting@MASXLLC.onmicrosoft.com"
-$groupMembers = $permGroup.members
+$groupMembers = $permGroup.members | Where-Object {($_.UserPrincipalName -like "luca.serra@butcherbox.com")}
 
 foreach($mailbox in $allMailboxes){
-    if($mailbox.WhenCreated -gt [DateTime]::Now.AddDays(-7)){
         foreach($member in $groupMembers){
             $name = $mailbox.exchangeobjectid
             try {Add-MailboxFolderPermission -Identity $name`:\Calendar -User $member -AccessRights LimitedDetails}
             catch {Set-MailboxFolderPermission -Identity $name`:\Calendar -User $member -AccessRights LimitedDetails}
-       }
+       
     }
 }
+
 $outCSV = ".\outputCSV.csv"
 $outHASH = @{}
 foreach($mailbox in $allMailboxes){
