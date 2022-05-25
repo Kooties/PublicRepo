@@ -83,3 +83,28 @@ Add-Content -Path $logfile -Value "$usersToCheckManually need to be manually che
 
 Write-Host "Script End"
 Add-Content -Path $logfile -Value "Script End" 
+
+
+
+
+
+
+
+
+
+
+$allMailboxes = Get-User -ResultSize unlimited | Where-Object {$_.UserPrincipalName -like "*butcherbox.com"}
+
+<#Use $permGroup for if you are using a mail-enabled security group#>
+$permGroup = get-group -identity "PeopleOpsRecruiting@MASXLLC.onmicrosoft.com"
+$groupMembers = $permGroup.members
+
+foreach($mailbox in $allMailboxes){
+    if($mailbox.WhenCreated -gt [DateTime]::Now.AddDays(-14)){
+        foreach($member in $groupMembers){
+            $name = $mailbox.exchangeobjectid
+            try {Add-MailboxFolderPermission -Identity $name`:\Calendar -User $member -AccessRights LimitedDetails}
+            catch {Set-MailboxFolderPermission -Identity $name`:\Calendar -User $member -AccessRights LimitedDetails}
+       }
+    }
+}

@@ -13,19 +13,23 @@ $csv = import-csv -path "\\this\is\the\path\to\the.csv"
 
 foreach($csvuser in $csv){
     $user = get-azureaduser -ObjectId $csvuser.currentworkemail
-    $supervisor = Get-AzureADUserManager -ObjectId $csvuser.currentworkemail
+    if($csv.currentworkemail){
+        $supervisor = Get-AzureADUserManager -ObjectId $csvuser.currentworkemail
+    }
     <#Manager Checking#>
-    if($supervisor.UserPrincipalName -notlike $csvuser.SupervisorWorkEmail){
+    if(($csvuser.SupervisorWorkEmail) -and ($supervisor.UserPrincipalName -notlike $csvuser.SupervisorWorkEmail)){
         $actualSupervisor = Get-AzureADUser -ObjectId $csvuser.SupervisorWorkEmail
         Set-AzureADUserManager -ObjectId $csvuser.currentworkemail -RefObjectId $actualSupervisor.ObjectId
     }
     <#Title Checking#>
-    if($csvuser.JobTitle -notlike $user.JobTitle){
+    if(($csvuser.JobTitle -notlike $user.JobTitle) -and $csvuser.JobTitle){
         Set-AzureADUser -ObjectId $csvuser.CurrentWorkEmail -JobTitle $csvuser.JobTitle
     }
     <#Department and Type Code Checking#>
-    $department = ($csvuser.DepartmentDescription + " - " + $csvuser.TypeCode)
-    if($department -notlike $user.department){
-        Set-AzureADUser -ObjectId $csvuser.CurrentWorkEmail -Department $department
+    if($csvuser.DepartmentDescription -and $csvuser.TypeCode){
+        $department = ($csvuser.DepartmentDescription + " - " + $csvuser.TypeCode)
+        if($department -notlike $user.department){
+            Set-AzureADUser -ObjectId $csvuser.CurrentWorkEmail -Department $department
+        }
     }
 }

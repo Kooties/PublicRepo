@@ -1,5 +1,3 @@
 Connect-AzureAD
 
-$users = get-azureADUser -all
-
-Add-MailboxFolderPermission -Identity Employees@MASXLLC.onmicrosoft.com:\Calendar -User PeopleOpsRecruiting@MASXLLC.onmicrosoft.com -AccessRights LimitedDetails -SharingPermissionFlags None
+$csv = Import-csv -Path "C:\Users\Krystina Kyle\OneDrive - MASX LLC\Documents\BB Employee List 3.30.csv"
