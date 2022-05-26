@@ -9,6 +9,9 @@ $30dayMonths = 4,6,9,11
 $openings = get-content -path .\dobOpenings.txt
 $closings = get-content -path .\dobEndings.txt
 $subjects = get-content -path .\emailSubjects.txt
+$firstNames = get-content -path .\firstNames.txt
+$lastNames = get-content -path .\lastNames.txt
+$states = get-content -path .\states.txt
 $templatePath = get-childitem ".\" -Filter "*.oft"
 
 function New-SeedExample {
@@ -17,6 +20,9 @@ function New-SeedExample {
     $year = $years | get-random
     $open = $openings | get-random
     $closing = $closings | get-random
+    $firstName = $firstNames | get-random
+    $lastName = $lastNames | get-random
+    $state = $states | get-random
     if($30dayMonths -contains $month){
         while($day > 30){
             $day = $days | get-random
@@ -61,13 +67,14 @@ function New-SeedExample {
             $dayst = "$day" + "th"
         }
     }
-    $exampleTypes = 1..3
+    $exampleTypes = 1..4
     $example = $exampleTypes | get-random
     switch($example)
     {
         1 {$exampleData = "$open$monthName $day, $year$closing"}
         2 {$exampleData = "$open the $dayst of $monthName, $year$closing"}
         3 {$exampleData = "$open$month/$day/$year$closing"}
+        4 {$exampleData = "$open`:`nName: $firstName $lastName`nDOB: $month/$day/$year`nState: $state`n Here you go$closing"}
     }
     
     return $exampleData
@@ -85,21 +92,22 @@ function new-EmailExample {
     $Mail.Recipients.Add("email@email.com") | Out-Null
     $mail.Subject = $subjects | get-random
     $Mail.Body = $body
-    $writePath = "$PSScriptRoot\$iteration.msg"
+    $writePath = "$PSScriptRoot\birthdays\$iteration.msg"
     $Mail.SaveAs($writePath)
     $obj.quit()
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($obj)
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($obj) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($mail)  | Out-Null
 }
 
 [uint16]$numberOfTXTExamples = Read-Host "How many TXT examples would you like?"
 [uint16]$numberOfEMLExamples = Read-Host "How many EML examples would you like?"
 
-for($i=0; $i -lt $numberOfTXTExamples; $i++){
+for($i=1; $i -le $numberOfTXTExamples; $i++){
     $data = New-SeedExample
     $data | Out-File -FilePath ".\birthdays\$i.txt"
 }
 
-for($i=0; $i -lt $numberOfEMLExamples; $i++){
+for($i=1; $i -le $numberOfEMLExamples; $i++){
     $data = New-SeedExample
     New-EmailExample -body $data -iteration $i
 }
