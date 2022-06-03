@@ -125,7 +125,7 @@ function new-EmailExample {
 [uint16]$numberOfEMLExamples = Read-Host "How many EML examples would you like?"
 [bool]$negativeIncluded = Read-Host "Do you need negative test cases included?`nPlease enter 0 for no and 1 for yes:"
 [bool]$negativeOnly = Read-Host "Do you ONLY need negative test cases?`nPlease enter 0 for no and 1 for yes:"
-if(!$negativeIncluded){
+if($negativeIncluded -eq 0){
     $writePath = "onlyPositive"
 }elseif($negativeOnly){
     $writePath = "onlyNegative"
