@@ -3,7 +3,7 @@ add-type -assembly "System.Runtime.Interopservices"
 
 $days = 1..31
 $months = 1..12
-$years = 1900..2014
+$years = 1930..2014
 $30dayMonths = 4,6,9,11
 
 $openings = get-content -path .\dobOpenings.txt
@@ -12,9 +12,13 @@ $subjects = get-content -path .\emailSubjects.txt
 $firstNames = get-content -path .\firstNames.txt
 $lastNames = get-content -path .\lastNames.txt
 $states = get-content -path .\states.txt
-$templatePath = get-childitem ".\" -Filter "*.oft"
+$templatePath = get-childitem ".\" -Filter "template.oft"
 
 function New-SeedExample {
+    param(
+        [bool]$negIncluded,
+        [bool]$negOnly
+    )
     $day = $days | get-random
     $month = $months | get-random
     $year = $years | get-random
@@ -67,14 +71,32 @@ function New-SeedExample {
             $dayst = "$day" + "th"
         }
     }
-    $exampleTypes = 1..4
+
+    if($negOnly){
+        $exampleTypes = 7..12
+    }elseif ($negIncluded) {
+        $exampleTypes = 1..14
+    }else{
+        $exampleTypes = 1..6
+    }
+
     $example = $exampleTypes | get-random
     switch($example)
     {
-        1 {$exampleData = "$open$monthName $day, $year$closing"}
-        2 {$exampleData = "$open the $dayst of $monthName, $year$closing"}
-        3 {$exampleData = "$open$month/$day/$year$closing"}
-        4 {$exampleData = "$open`:`nName: $firstName $lastName`nDOB: $month/$day/$year`nState: $state`n Here you go$closing"}
+        1 {$exampleData = "$open`My birthday is $monthName $day, $year$closing"}
+        2 {$exampleData = "$open $firstName was born on the $dayst of $monthName, $year$closing"}
+        3 {$exampleData = "$open My date of birth is $month/$day/$year$closing"}
+        4 {$exampleData = "$open`:`nName: $firstName $lastName`nDOB: $month/$day/$year`nState: $state`nHere you go$closing"}
+        5 {$exampleData = "$open My birthdate is $monthName $day, $year$closing"}
+        6 {$exampleData = "$open My birthday is $month/$day/$year$closing"}
+        7 {$exampleData = "$open I do not feel comfortable sharing that information at this time$closing"}
+        8 {$exampleData = "$open I am not giving you that information$closing"}
+        9 {$exampleData = "$open You should not need this information$closing"}
+        10 {$exampleData = "$open`:`nName: $first Name $lastName `nDOB: N/A`nState: $state`nHere you are$closing"}
+        11 {$exampleData = "$open You don't need my birthday for this$closing"}
+        12 {$exampleData = "$open You don't need my birthdate for this$closing"}
+        13 {$exampleData = "$open You don't need my birth day for this$closing"}
+        14 {$exampleData = "$open You don't need my birth date for this$closing"}
     }
     
     return $exampleData
@@ -83,7 +105,7 @@ function new-EmailExample {
     [CmdletBinding()]
     param (
         [ValidateNotNullOrEmpty()]
-        $body,$iteration
+        $body,$iteration,$savePath
     )
 
     $obj = New-Object -comObject Outlook.Application
@@ -92,22 +114,32 @@ function new-EmailExample {
     $Mail.Recipients.Add("email@email.com") | Out-Null
     $mail.Subject = $subjects | get-random
     $Mail.Body = $body
-    $writePath = "$PSScriptRoot\birthdays\$iteration.msg"
+    $writePath = "$PSScriptRoot\$savePath\$iteration.msg"
     $Mail.SaveAs($writePath)
     $obj.quit()
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($obj) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($obj)  | Out-Null
     [System.Runtime.Interopservices.Marshal]::ReleaseComObject($mail)  | Out-Null
 }
 
 [uint16]$numberOfTXTExamples = Read-Host "How many TXT examples would you like?"
 [uint16]$numberOfEMLExamples = Read-Host "How many EML examples would you like?"
+[bool]$negativeIncluded = Read-Host "Do you need negative test cases included?`nPlease enter 0 for no and 1 for yes:"
+[bool]$negativeOnly = Read-Host "Do you ONLY need negative test cases?`nPlease enter 0 for no and 1 for yes:"
+if(!$negativeIncluded){
+    $writePath = "onlyPositive"
+}elseif($negativeOnly){
+    $writePath = "onlyNegative"
+}else{
+    $writePath = "testCases"}
 
 for($i=1; $i -le $numberOfTXTExamples; $i++){
-    $data = New-SeedExample
-    $data | Out-File -FilePath ".\birthdays\$i.txt"
+    $data = New-SeedExample -negIncluded $negativeIncluded -negOnly $negativeOnly
+    $data | Out-File -FilePath ".\$writePath\$i.txt"
 }
 
 for($i=1; $i -le $numberOfEMLExamples; $i++){
-    $data = New-SeedExample
-    New-EmailExample -body $data -iteration $i
+    $data = New-SeedExample -negIncluded $negativeIncluded -negOnly $negativeOnly
+    New-EmailExample -body $data -iteration $i -savePath $writePath
 }
+[System.Runtime.Interopservices.Marshal]::ReleaseComObject($obj)  | Out-Null
+[System.Runtime.Interopservices.Marshal]::ReleaseComObject($mail)  | Out-Null
