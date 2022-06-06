@@ -92,7 +92,7 @@ function New-SeedExample {
         7 {$exampleData = "$open I do not feel comfortable sharing that information at this time$closing"}
         8 {$exampleData = "$open I am not giving you that information$closing"}
         9 {$exampleData = "$open You should not need this information$closing"}
-        10 {$exampleData = "$open`:`nName: $first Name $lastName `nDOB: N/A`nState: $state`nHere you are$closing"}
+        10 {$exampleData = "$open`:`nName: $firstName $lastName `nDOB: N/A`nState: $state`nHere you are$closing"}
         11 {$exampleData = "$open You don't need my birthday for this$closing"}
         12 {$exampleData = "$open You don't need my birthdate for this$closing"}
         13 {$exampleData = "$open You don't need my birth day for this$closing"}
@@ -123,14 +123,24 @@ function new-EmailExample {
 
 [uint16]$numberOfTXTExamples = Read-Host "How many TXT examples would you like?"
 [uint16]$numberOfEMLExamples = Read-Host "How many EML examples would you like?"
-[bool]$negativeIncluded = Read-Host "Do you need negative test cases included?`nPlease enter 0 for no and 1 for yes:"
-[bool]$negativeOnly = Read-Host "Do you ONLY need negative test cases?`nPlease enter 0 for no and 1 for yes:"
-if($negativeIncluded -eq 0){
-    $writePath = "onlyPositive"
-}elseif($negativeOnly){
+$negativeIncluded = Read-Host "Do you need negative test cases included?`nPlease enter true or false:"
+$negativeOnly = Read-Host "Do you ONLY need negative test cases?`nPlease enter true or false:"
+
+try {
+    $negativeIncluded = [System.Convert]::ToBoolean($negativeIncluded)
+    $negativeOnly = [System.Convert]::ToBoolean($negativeOnly)
+}
+catch {
+    {throw 'Error parsing booleans'}
+}
+
+if($negativeOnly -eq $true){
     $writePath = "onlyNegative"
+}elseif($negativeIncluded -eq $false){
+    $writePath = "onlyPositive"
 }else{
-    $writePath = "testCases"}
+    $writePath = "testCases"
+}
 
 for($i=1; $i -le $numberOfTXTExamples; $i++){
     $data = New-SeedExample -negIncluded $negativeIncluded -negOnly $negativeOnly
