@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<helpItems xmlns="http://msh" schema="maml">
+<command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+        <command:name>Compare-RegExDate</command:name>
+        <command:verb>Compare</command:verb>
+        <command:noun>RegExDate</command:noun>
+        <maml:description>
+            <maml:para>Commands to check if input data matches known date formats</maml:para>    
+        </maml:description>
+    </command:details>
+    <maml:description>
+        <maml:para>Used to verify if data is a date</maml:para>
+    </maml:description>
+    <command:syntax>
+        <command:syntaxItem>
+            <maml:name>Compare-RegExDate</maml:name>
+            <command:parameter required="true">
+                <maml:name>inputString</maml:name>
+                <maml:description>
+                    <maml:para>Data to check to see if it contains a valid date format</maml:para>
+                </maml:description>
+            </command:parameter>
+        </command:syntaxItem>
+    </command:syntax>
+    <command:inputTypes>
+        <command:inputType>
+            <dev:type>
+                <maml:name>System.String</maml:name>
+            </dev:type>
+        <maml:description>
+            <maml:para> </maml:para>
+        </maml:description>
+        </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+        <command:returnValue>
+            <dev:type>
+                <maml:name>System.boolean</maml:name>
+            </dev:type>
+            <maml:description>
+                <maml:para> </maml:para>
+            </maml:description>
+            </command:returnValue>
+        </command:returnValues>
+    </command:returnValues>
+    <maml:alertSet>
+        <maml:alert>
+            <maml:para> </maml:para>
+        </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+        <command:example>
+            <maml:title>Example 1</maml:title>
+            <dev:code>$april14 = Compare-RegExDate -inputString "14th April 2012"</dev:code>
+            <dev:remarks>The input string "14th April 2012" contains a known valid date format. $april14 will now have a boolean value of $true.</dev:remarks>
+        </command:example>
+        <command:example>
+            <maml:title>Example 2</maml:title>
+            <dev:code>$april14 = Compare-RegExDate -inputString "true"</dev:code>
+            <dev:remarks>The input string "true" does not contain a known valid date format. $april14 will now have a boolean value of $false.</dev:remarks>
+        </command:example>
+    </command:examples>
+</command:command>
+</helpItems>
