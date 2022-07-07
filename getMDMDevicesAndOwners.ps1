@@ -20,6 +20,6 @@ foreach($device in $devices){
 
 #return $ownersAndDevices
 
-$ownersAndDevices | Export-CSV -Path .\MDMDevicesandOwners.csv
+$ownersAndDevices | Export-CSV -Path .\MDMDevicesandOwners.csv -NoTypeInformation
 
 $ownersAndDevices.clear()
