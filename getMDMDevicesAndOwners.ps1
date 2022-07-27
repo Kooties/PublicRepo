@@ -2,7 +2,7 @@
 Krystina Kyle, 2022#>
 
 Connect-AzureAD
-$devices = Get-AzureADDevice | Where-Object {($_.DeviceOSType -notlike "Windows") -and ($_.IsManaged -eq $true) -and ($_.IsCompliant -eq $true)}
+$devices = Get-AzureADDevice -all $true | Where-Object {($_.DeviceOSType -notlike "Windows") -and ($_.IsManaged -eq $true) -and ($_.IsCompliant -eq $true)}
 $ownersAndDevices = New-Object System.Data.DataTable
 [void]$ownersAndDevices.Columns.Add("Display Name")
 [void]$ownersAndDevices.Columns.Add("Email Address")
@@ -18,8 +18,8 @@ foreach($device in $devices){
     [void]$ownersAndDevices.Rows.Add($owner.DisplayName, $owner.UserPrincipalName, $os)
 }
 
-#return $ownersAndDevices
+return $ownersAndDevices
 
-$ownersAndDevices | Export-CSV -Path .\MDMDevicesandOwners.csv -NoTypeInformation
+#$ownersAndDevices | Export-CSV -Path .\MDMDevicesandOwners.csv -NoTypeInformation
 
 $ownersAndDevices.clear()
