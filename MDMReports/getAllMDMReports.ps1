@@ -38,7 +38,7 @@ $string = $ownersAndDevices | ConvertTo-Csv -NoTypeInformation | Out-String
 $content = [System.Text.Encoding]::UTF8.GetBytes($string)
 $stream1 = [System.IO.MemoryStream]$content
 
-Add-PnPFile -FileName $hasMDMReportName -Folder "Shared Documents/MDM Reporting/MDM Installed" -Stream $stream1 -ContentType "Document"
+$file1 = Add-PnPFile -FileName $hasMDMReportName -Folder "Shared Documents/MDM Reporting/MDM Installed" -Stream $stream1 -ContentType "Document"
 $ownersAndDevices.clear()
 [void]$ownersAndDevices.Columns.Remove("Device Type")
 
@@ -55,7 +55,7 @@ $string = $ownersAndDevices | ConvertTo-Csv -NoTypeInformation | Out-String
 $content = [System.Text.Encoding]::UTF8.GetBytes($string)
 $stream2 = [System.IO.MemoryStream]$content
 
-Add-PnPFile -FileName $noMDMReportName -Folder "Shared Documents/MDM Reporting/No MDM" -Stream $stream2 -ContentType "Document"
+$file2 = Add-PnPFile -FileName $noMDMReportName -Folder "Shared Documents/MDM Reporting/No MDM" -Stream $stream2 -ContentType "Document"
 
 $ownersAndDevices.clear()
 
@@ -94,7 +94,7 @@ $string = $changes | ConvertTo-Csv -NoTypeInformation | Out-String
 $content = [System.Text.Encoding]::UTF8.GetBytes($string)
 $stream3 = [System.IO.MemoryStream]$content
 
-Add-PnPFile -FileName $comparisonFileName -Folder "Shared Documents/MDM Reporting/Change Logs" -Stream $stream3 -ContentType "Document"
+$file3 = Add-PnPFile -FileName $comparisonFileName -Folder "Shared Documents/MDM Reporting/Change Logs" -Stream $stream3 -ContentType "Document"
 
 
 $changes.clear()
