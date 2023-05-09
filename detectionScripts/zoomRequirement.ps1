@@ -4,6 +4,10 @@ $installedVersions = [System.Collections.ArrayList]@()
 $installer = ".\ZoomInstallerFull.msi"
 $version = Get-AppLockerFileInformation -Path $installer | Select-Object -ExpandProperty Publisher | Select-Object BinaryVersion
 
+if(Test-Path "%appdata%/Zoom"){
+    return $true
+}
+
 if([System.Environment]::Is64BitProcess){
     if(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"){
         $MachineRegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
