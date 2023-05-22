@@ -20,8 +20,13 @@ Function Get-RandomPassword
 
 $pw = Get-RandomPassword
 $accname = "tech"
-if($acc = get-localuser -Name $accname){
+
+$acc = get-localuser -Name $accname -ErrorAction Continue
+if($acc){
     Set-LocalUser -Name $accname -Password $pw
+    Write-Host "Set password"
 }else{
     New-LocalUser -Name $accname -Description "LAPS Account" -Password $pw
+    Add-LocalGroupMember -Group "Administrators" -Member $accname
+    Write-Host "Created account and set password"
 }
