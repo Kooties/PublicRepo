@@ -18,7 +18,7 @@ Function Get-RandomPassword
     return $str
 }
 
-$accname = "tech"
+$accname = "sonny.crockett"
 $acc = get-localuser -Name $accname -ErrorAction Continue
 $adminGroupSID = "S-1-5-32-544"
 #See if account exists and has a password

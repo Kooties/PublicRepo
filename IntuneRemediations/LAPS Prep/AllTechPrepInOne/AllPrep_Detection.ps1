@@ -1,4 +1,4 @@
-$accname = "tech" #Enter the account name you want to use here
+$accname = "sonny.crockett" #Enter the account name you want to use here
 $acc = get-localuser -Name $accname -ErrorAction Continue
 
 #See if account exists and has a password
