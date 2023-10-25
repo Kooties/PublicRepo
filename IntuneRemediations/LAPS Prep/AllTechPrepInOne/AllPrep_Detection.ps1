@@ -15,6 +15,10 @@ if($acc){
         Write-Host "Acct doesn't have password; needs remediation"
         Exit 1;
     }
+    if(!Get-LocalGroupMember -SID $adminGroupSID -Member $accname -ErrorAction Continue){
+        Write-Host "Acct isn't an administrator; needs remediation"
+        Exit 1;
+    }
 }else{
     Write-Host "Acct doesn't exist; needs remediation"
     Exit 1;

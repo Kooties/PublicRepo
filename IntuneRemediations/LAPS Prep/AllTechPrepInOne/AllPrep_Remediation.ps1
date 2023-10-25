@@ -19,8 +19,8 @@ Function Get-RandomPassword
 }
 
 $accname = "tech"
-$pw = Get-RandomPassword
 $acc = get-localuser -Name $accname -ErrorAction Continue
+$adminGroupSID = "S-1-5-32-544"
 #See if account exists and has a password
 if($acc){
     if($acc.Enabled -eq $false){
@@ -28,12 +28,21 @@ if($acc){
     }
     #Make sure account isn't the local admin account renamed
     if($acc.sid -match "S-1-5-21-\d{10}-\d{10}-\d{10}-500"){
+        $pw = Get-RandomPassword
+        Set-LocalUser -Name $acc -Password $pw
+        $pw = Get-RandomPassword
         Rename-LocalUser -Name $accname -NewName "Administrator"
         Disable-LocalUser -Name "Administrator"
         New-LocalUser -Name $accname -Description "LAPS Account" -Password $pw
+        Add-LocalGroupMember -SID $adminGroupSID -Member $accname
         Write-Host "Renamed default admin and created LAPS account"
     }
+    if(!Get-LocalGroupMember -SID $adminGroupSID -Member $accname -ErrorAction Continue){
+        Add-LocalGroupMember -SID $adminGroupSID -Member $accname
+    }
 }else{
+    $pw = Get-RandomPassword
     New-LocalUser -Name $accname -Description "LAPS Account" -Password $pw
+    Add-LocalGroupMember -SID $adminGroupSID -Member $accname
     Write-Host "Created LAPS account"
 }
