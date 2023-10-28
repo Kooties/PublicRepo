@@ -1,5 +1,6 @@
 $accname = "sonny.crockett" #Enter the account name you want to use here
 $acc = get-localuser -Name $accname -ErrorAction Continue
+$adminGroupSID = "S-1-5-32-544"
 
 #See if account exists and has a password
 if($acc){
