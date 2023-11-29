@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\ProgramData\Krystina Kyle\GitHubDesktop\app-2.9.6\PublicRepo\.venv
+set VIRTUAL_ENV=c:\Users\Brown\Documents\GitHub\PublicRepo\.venv
 
 if not defined PROMPT set PROMPT=$P$G
 
