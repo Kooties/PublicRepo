@@ -27,5 +27,3 @@ while type(maxValue) == int:
         i += 1
     if i > maxValue:
         break
-else:
-    print("You did not input a number")
