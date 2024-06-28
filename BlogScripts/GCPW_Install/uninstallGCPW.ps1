@@ -6,9 +6,3 @@ Set-Location "C:\Program Files\Google\Credential Provider"
 $folder = Get-ChildItem
 Set-Location $folder.Name
 .\gcp_setup.exe /uninstall
-
-
-
-.\gcpwstandaloneenterprise64.msi --uninstall
-
-msiexec /x gcpwstandaloneenterprise64.msi /quiet /qn
