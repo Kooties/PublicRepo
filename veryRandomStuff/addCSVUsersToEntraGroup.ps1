@@ -4,7 +4,6 @@ connect-mggraph -scopes user.ReadWrite.All,Group.ReadWrite.All,GroupMember.ReadW
 
 $group = Get-MgGroup -Filter "DisplayName eq $groupName"
 foreach($user in $userCSV){
-    $email = $user.Email
-    $newMember = get-MgUser -Filter "UserPrincipalName eq $email"
+    $newMember = get-MgUser -Filter "UserPrincipalName eq $($user.email)"
     New-MgGroupMember -GroupId $group.id -DirectoryObjectId $newMember.id
 }
