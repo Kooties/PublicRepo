@@ -5,6 +5,8 @@ department and TypeCode is People Manager or Individual Contributer)
 
 NOTE:  This script does NOT update names or email addresses.
 
+UPDATE 11/13/2024 - Uses deprecated AzureAD Powershell modules; do not use
+
 Krystina Kyle, 3/3/2022#>
 
 connect-azuread
