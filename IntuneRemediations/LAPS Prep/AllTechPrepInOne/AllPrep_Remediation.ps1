@@ -31,11 +31,11 @@ if($acc){
         $pw = Get-RandomPassword
         Set-LocalUser -Name $acc -Password $pw
         $pw = Get-RandomPassword
-        Rename-LocalUser -Name $accname -NewName "Administrator"
-        Disable-LocalUser -Name "Administrator"
         New-LocalUser -Name $accname -Description "LAPS Account" -Password $pw
         Add-LocalGroupMember -SID $adminGroupSID -Member $accname
         Write-Host "Renamed default admin and created LAPS account"
+        Rename-LocalUser -Name $accname -NewName "Administrator"
+        Disable-LocalUser -Name "Administrator"
     }
     if(!Get-LocalGroupMember -SID $adminGroupSID -Member $accname -ErrorAction Continue){
         Add-LocalGroupMember -SID $adminGroupSID -Member $accname
