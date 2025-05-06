@@ -28,3 +28,6 @@ function Get-CustomJoke{
     $uri = "https://v2.jokeapi.dev/joke/$args"
     return Invoke-RestMethod -method Get -uri $uri
 }
+
+Export-ModuleMember -Function Get-Joke
+Export-ModuleMember -Function Get-CustomJoke
